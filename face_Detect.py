@@ -1,6 +1,11 @@
 import cv2
 import sys
+import numpy as np
 
+from keras.models import load_model
+model=load_model("/Users/jvr605/Downloads/FaceDetect_master/Train_keras.mod")
+
+emotions = ['Angry','Disgust', 'Fear', 'Happy','Sad','Surprise','Neutral']
 # Get user supplied values
 imagePath = sys.argv[1]
 cascPath = "haarcascade_frontalface_default.xml"
@@ -26,14 +31,22 @@ print("Found {0} faces!".format(len(faces)))
 # Draw a rectangle around the faces
 for i,(x, y, w, h)  in enumerate(faces):
     #cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
-    sub_face = image[y:y+h, x:x+w]
+    sub_face = gray[y:y+h, x:x+w]
     r = 48.0 / sub_face.shape[1]
     dim = (48, int(sub_face.shape[0] * r))
     # perform the actual resizing of the image and show it
     resized = cv2.resize(sub_face, dim, interpolation = cv2.INTER_AREA)
+    temp =resized
+    #resized.reshape
+    #resized = np.array([resized])
+    resized =resized.reshape(-1,1,48,48)
+    print model.predict(resized)
+    type(model.predict(resized))
 
     print resized.shape
     cv2.imwrite("face-" + str(i)+".jpg",sub_face)
 
-cv2.imshow("Faces found", resized)
+
+
+cv2.imshow("Faces found", temp)
 cv2.waitKey(0)
