@@ -40,8 +40,9 @@ for i,(x, y, w, h)  in enumerate(faces):
     #resized.reshape
     #resized = np.array([resized])
     resized =resized.reshape(-1,1,48,48)
-    print model.predict(resized)
-    type(model.predict(resized))
+    prediction_result = np.argmax(model.predict(resized))
+
+    print emotions[prediction_result]
 
     print resized.shape
     cv2.imwrite("face-" + str(i)+".jpg",sub_face)
