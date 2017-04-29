@@ -1,31 +1,24 @@
 import cv2
+import os
 import sys
+from string import Template
 
-# Get user supplied values
-imagePath = sys.argv[1]
-cascPath = "haarcascade_frontalface_default.xml"
+# first argument is the haarcascades path
+face_cascade_path = sys.argv[1]
+face_cascade = cv2.CascadeClassifier(os.path.expanduser(face_cascade_path))
 
-# Create the haar cascade
-faceCascade = cv2.CascadeClassifier(cascPath)
+scale_factor = 1.1
+min_neighbors = 3
+min_size = (30, 30)
+flags = cv2.cv.CV_HAAR_SCALE_IMAGE
 
-# Read the image
-image = cv2.imread(imagePath)
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+for infname in sys.argv[2:]:
+   image_path = os.path.expanduser(infname)
+   image = cv2.imread(image_path)
 
-# Detect faces in the image
-faces = faceCascade.detectMultiScale(
-    gray,
-    scaleFactor=1.1,
-    minNeighbors=5,
-    minSize=(30, 30),
-    flags = cv2.cv.CV_HAAR_SCALE_IMAGE
-)
+   faces = face_cascade.detectMultiScale(image, scaleFactor = scale_factor, minNeighbors = min_neighbors,
+    minSize = min_size, flags = flags)
 
-print("Found {0} faces!".format(len(faces)))
-
-# Draw a rectangle around the faces
-for (x, y, w, h) in faces:
-    cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
-
-cv2.imshow("Faces found", image)
-cv2.waitKey(0)
+   for( x, y, w, h ) in faces:
+     cv2.rectangle(image, (x, y), (x + w, y + h), (255, 255, 0), 2)
+     cv2.imwrite(faces.jpg", image)
